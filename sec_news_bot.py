@@ -9,6 +9,7 @@ import telepot
 queries = dict()
 DB = "percorso db file ..."
 
+master_user = #id di servizio per controllo errori
 lista_utenti = [id1, id2, ...]
 
 
@@ -22,11 +23,26 @@ def load_from_file(DB):
 
 
 def ricerca():
-    ricerca_codiceinsicuro()
-    ricerca_securityinfo_news()
-    ricerca_securityinfo_emergenze_e_scenari()
-    ricerca_securityinfo_minacce_e_guide_alla_sicurezza()
-    ricerca_thehackernews()
+    try:
+		ricerca_codiceinsicuro()
+    except:
+    	bot.sendMessage(master_user, "Errore da codice_insicuro")
+    try:
+        ricerca_securityinfo_news()
+    except:
+        bot.sendMessage(master_user, "Errore da security_info_news")
+    try:
+        ricerca_securityinfo_emergenze_e_scenari()
+    except:
+        bot.sendMessage(master_user, "security_info_emergenze_e_scenari")
+    try:
+        ricerca_securityinfo_minacce_e_guide_alla_sicurezza()
+    except:
+        bot.sendMessage(master_user, "Errore da security_info_minacce_e_guide_alla_sicurezza")
+    try:
+        ricerca_thehackernews()
+    except:
+        bot.sendMessage(master_user, "Errore da the_hacker_news")
 
 
 def sendto(msg):
@@ -54,12 +70,20 @@ def ricerca_codiceinsicuro():
     global queries
     page = requests.get(sito)
     soup = BeautifulSoup(page.text, 'html.parser')
-    blocco_contenuti = soup.find(class_='portus-content-block')
-    articoli = blocco_contenuti.find_all(class_='item-content')
-    for articolo in articoli:
-        titolo = articolo.find('a').contents[0]
-        url = sito + articolo.find('a').get('href')
-        data = articolo.find('span').contents[1]
+    blocco_contenuti = soup.find(class_='main-content')
+    featured = blocco_contenuti.find(class_='featured-posts')
+    recent = blocco_contenuti.find(class_='recent-posts')
+    articoli_featured = featured.find_all(class_='col-12 col-md-12 col-lg-7')
+    articoli_recent = recent.find_all(class_='col-lg-4 col-md-6 mb-30px card-group')
+    for articolo in articoli_featured:
+        titolo = articolo.find(class_='card-title').find(class_='text-dark').contents[0]
+        url = articolo.find(class_='card-title').find(class_='text-dark').get('href')
+        data = articolo.find(class_='post-date').contents[0]
+        controlla_e_posta(sito, titolo, data, url)
+    for articolo in articoli_recent:
+        titolo = articolo.find(class_='card-title').find(class_='text-dark').contents[0]
+        url = articolo.find(class_='card-title').find(class_='text-dark').get('href')
+        data = articolo.find(class_='post-date').contents[0]
         controlla_e_posta(sito, titolo, data, url)
     salva(DB)
 # ---------------- FINE CODICEINSICURO ----------------
