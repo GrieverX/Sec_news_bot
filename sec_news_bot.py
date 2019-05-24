@@ -24,9 +24,9 @@ def load_from_file(DB):
 
 def ricerca():
     try:
-		ricerca_codiceinsicuro()
+        ricerca_codiceinsicuro()
     except:
-    	bot.sendMessage(master_user, "Errore da codice_insicuro")
+        bot.sendMessage(master_user, "Errore da codice_insicuro")
     try:
         ricerca_securityinfo_news()
     except:
@@ -187,3 +187,4 @@ if __name__ == '__main__':
     bot = telepot.Bot('bot token')
     load_from_file(DB)
     ricerca()
+
