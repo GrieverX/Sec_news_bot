@@ -26,7 +26,7 @@ def ricerca():
     try:
 		ricerca_codiceinsicuro()
     except:
-    	bot.sendMessage(master_user, "Errore da codice_insicuro")
+		bot.sendMessage(master_user, "Errore da codice_insicuro")
     try:
         ricerca_securityinfo_news()
     except:
